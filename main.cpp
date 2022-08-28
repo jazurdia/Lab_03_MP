@@ -2,7 +2,6 @@
 // Created by Alejandro Azurdia on 26/08/22.
 //
 
-#include "main2.h"
 #include <iostream>
 #include <pthread.h>
 using namespace std;
@@ -79,7 +78,6 @@ int main(){
         pthread_create(&hilo_id, NULL, sumarPrimos, (void *)&hilo);
 
 
-        hilo_id ++;
 
     }
 
