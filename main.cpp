@@ -2,9 +2,11 @@
 // Created by Alejandro Azurdia on 26/08/22.
 //
 
+
 #include <iostream>
 #include <pthread.h>
 using namespace std;
+/****
 
 struct infoHilo{
     int max;
@@ -14,6 +16,8 @@ struct infoHilo{
 };
 
 // subrutina que comprueba si es primo
+
+
 bool esPrimo(int n){
     if (n == 0 || n == 1 || n == 4) return false;
     for (int x = 2; x < n / 2; x++) {
@@ -28,6 +32,8 @@ int sumarPrimos(int min, int max){
     for (int i = min; i <= max; i++){
         if(esPrimo(i)){
             suma += i;
+            cout << i << " ";
+            cout << suma << endl;
         }
     }
     return suma;
@@ -37,17 +43,6 @@ void *sumarPrimos(void *hilos){
     struct infoHilo *info = (struct infoHilo *)hilos;
     info->sumaparcial = sumarPrimos(info->min, info->max);
     pthread_exit((void*)(info->sumaparcial));
-}
-
-// subrutina que encuentra los rangos para sumarPrimos.
-int *encontrarRango(int n, int iteracion){
-    int min = n * iteracion;
-    int max = min + n - 1 ;
-
-    int arr[2] = {min, max};
-
-    return arr;
-
 }
 
 
@@ -68,29 +63,86 @@ int main(){
     n = maxTotal/nhilos; // asegurar de que no sea punto decimal.
     cout << "El valor de n es: " << n << endl;
 
-    for (int i = 0 ; i < nhilos; i++){
-        int *rango = encontrarRango(n, i);
-        hilo.max = rango[1];
-        hilo.min = rango[0];
-        hilo.n = n;
+    for (int i = 0 ; i < nhilos; i++) {
 
-        pthread_t hilo_id;
-        pthread_create(&hilo_id, NULL, sumarPrimos, (void *)&hilo);
+        //int min = n * i;
+        //int max = min + n - 1;
+        //hilo.n = n;
+
 
 
 
     }
+}
+    ****/
+
+struct info{
+    int max = 25;
+    int threads = 5;
+    int n;
+    int sumaparcial;
+    int mint;
+    int maxt;
+
+};
 
 
 
 
+bool esPrimo(int n){
+    if (n == 0 || n == 1 || n == 4 || n == 2) return false;
+    for (int x = 2; x < n / 2; x++) {
+        if (n % x == 0) return false;
+    }
+    return true;
+}
 
 
 
+void *sumarPrimos(void* info){
+    struct info *infoHilo = (struct info *)info;
+    int suma = 0;
+
+    for (int i = infoHilo->mint; i <= infoHilo->maxt; i++){
+        cout << "cheking " << i << "   ";
+        if(esPrimo(i)){
+            suma += i;
+            cout << i << "  es primo. ";
+        }
+        cout << endl;
+    }
+    infoHilo->sumaparcial = suma;
+    pthread_exit((void*)(infoHilo->sumaparcial));
+
+}
+
+int main(){
+
+    cout << "digamos que aquí pasa lo de ingrese cantidad maxima" << endl;
+    int sumatotal = 0;
+
+    info infohilo;
+    infohilo.n = infohilo.max/infohilo.threads;
+    cout << "El valor de n es: " << infohilo.n << endl;
+
+    for (int i = 0; i < infohilo.n; i++){
+        cout << "/***********************************/" << endl;
+        cout << "Hilo " << i << endl;
+
+        infohilo.mint = infohilo.n * i;
+        infohilo.maxt = infohilo.mint + infohilo.n - 1;
+
+        pthread_t hilo;
+        pthread_create(&hilo, NULL, sumarPrimos, (void*)&infohilo);
+        pthread_join(hilo, NULL);
+        sumatotal += infohilo.sumaparcial;
 
 
+    }
 
+    cout << "El valor de la suma total es: " << sumatotal << endl;
 
 
 
 }
+
