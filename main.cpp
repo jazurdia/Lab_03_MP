@@ -8,8 +8,8 @@
 using namespace std;
 
 struct info{
-    int max = 25;
-    int threads = 5;
+    int max;
+    int threads;
     int n;
     int sumaparcial;
     int mint;
@@ -18,7 +18,7 @@ struct info{
 };
 
 bool esPrimo(int n){
-    if (n == 0 || n == 1 || n == 4 || n == 2) return false;
+    if (n == 0 || n == 1 || n == 4 ) return false;
     for (int x = 2; x < n / 2; x++) {
         if (n % x == 0) return false;
     }
@@ -29,7 +29,6 @@ bool esPrimo(int n){
 void *sumarPrimos(void* info){
     struct info *infoHilo = (struct info *)info;
     int suma = 0;
-
     for (int i = infoHilo->mint; i <= infoHilo->maxt; i++){
         cout << "cheking " << i << "   ";
         if(esPrimo(i)){
@@ -59,18 +58,33 @@ int main(){
     infohilo.n = infohilo.max/infohilo.threads;
     cout << "El valor de n es: " << infohilo.n << endl;
 
-    for (int i = 0; i < infohilo.n; i++){
-        cout << "/***********************************/" << endl;
-        cout << "Hilo " << i << endl;
+    for (int i = 0; i < infohilo.threads; i++){
 
-        infohilo.mint = infohilo.n * i;
-        infohilo.maxt = infohilo.mint + infohilo.n - 1;
+        if(i == infohilo.threads - 1){
 
-        pthread_t hilo;
-        pthread_create(&hilo, NULL, sumarPrimos, (void*)&infohilo);
-        pthread_join(hilo, NULL);
-        sumatotal += infohilo.sumaparcial;
+            cout << "/***********************************/" << endl;
+            cout << "Hilo " << i << endl;
 
+            infohilo.mint = i * infohilo.n + 1;
+            infohilo.maxt = infohilo.max;
+
+            pthread_t hilo;
+            pthread_create(&hilo, NULL, sumarPrimos, (void*)&infohilo);
+            pthread_join(hilo, NULL);
+            sumatotal += infohilo.sumaparcial;
+
+        } else {
+            cout << "/***********************************/" << endl;
+            cout << "Hilo " << i << endl;
+
+            infohilo.mint = infohilo.n * i;
+            infohilo.maxt = infohilo.mint + infohilo.n - 1;
+
+            pthread_t hilo;
+            pthread_create(&hilo, NULL, sumarPrimos, (void*)&infohilo);
+            pthread_join(hilo, NULL);
+            sumatotal += infohilo.sumaparcial;
+        }
 
     }
 
