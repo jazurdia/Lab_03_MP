@@ -90,7 +90,5 @@ int main(){
 
     cout << "El valor de la suma total es: " << sumatotal << endl;
 
-
-
 }
 
