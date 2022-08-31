@@ -3,8 +3,23 @@
 //
 
 
+/*******************************************************************************
+ * Inicio de la parte A del laboratorio 3 de Programación de Microprocesadores.
+ * Fecha de entrega: 29 de agosto de 2022.
+***/
+
+
 #include <iostream>
 #include <pthread.h>
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
+
+
 using namespace std;
 
 struct info{
@@ -42,7 +57,7 @@ void *sumarPrimos(void* info){
 
 }
 
-int main(){
+int mainA(){
 
     int sumatotal = 0;
 
@@ -92,3 +107,82 @@ int main(){
 
 }
 
+/***
+* Inicio de la parte B del laboratorio 3 de Programación de Microprocesadores.
+* Fecha de entrega: 31 de agosto de 2022.
+*/
+
+// funcion para p_threads que evalua n en la sumatoria.
+void *sumatoria(void *arg){
+    float *n;
+    n = (float *)arg;
+    float *resultado;
+    resultado = (float *)malloc(sizeof(float));
+    *resultado = 1/((*n)*((*n)-1));
+    return (void *)resultado;
+}
+
+
+
+int mainB(){
+    float n;
+    cout << "Ingrese el numero n: " << endl;
+    cin >> n;
+
+    for (int i = 1; i < n; i++){
+        pthread_t hilo;
+        pthread_attr_t attr;
+
+        float v = (float)i;
+
+        pthread_attr_init(&attr);
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
+        void *exit_value;
+        pthread_create(&hilo, &attr, sumatoria, (void *)&v);
+        pthread_join(hilo, &exit_value);
+        float res = *((float *)exit_value);
+        free(exit_value);
+
+        cout << "El valor de la sumatoria es en el hilo " << i << ": " << res << endl;
+
+
+    }
+
+    return 0;
+
+}
+
+
+/***
+* Main para elegir que parte del laboratorio 3 de Programación de Microprocesadores ejecutar.
+*/
+
+
+int main(){
+
+    bool flag = true;
+    while(flag){
+        cout << endl;
+        cout << "Elige la parte a ejecutar: " << endl;
+        cout << "1. Parte A" << endl;
+        cout << "2. Parte B" << endl;
+        cout << "3. Salir" << endl;
+        int opcion;
+        cin >> opcion;
+        switch (opcion){
+            case 1:
+                mainA();
+                break;
+            case 2:
+                mainB();
+                break;
+            case 3:
+                flag = false;
+                break;
+            default:
+                cout << "Opcion no valida" << endl;
+                break;
+        }
+    }
+}
