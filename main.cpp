@@ -122,32 +122,31 @@ void *sumatoria(void *arg){
     return (void *)resultado;
 }
 
-
-
 int mainB(){
     float n;
     cout << "Ingrese el numero n: " << endl;
     cin >> n;
+    float resSumatoria = 0;
 
-    for (int i = 1; i < n; i++){
+    for (int i = 2; i < n; i++) {
         pthread_t hilo;
         pthread_attr_t attr;
 
-        float v = (float)i;
+        float v = (float) i;
 
         pthread_attr_init(&attr);
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
         void *exit_value;
-        pthread_create(&hilo, &attr, sumatoria, (void *)&v);
+        pthread_create(&hilo, &attr, sumatoria, (void *) &v);
         pthread_join(hilo, &exit_value);
-        float res = *((float *)exit_value);
+        float res = *((float *) exit_value);
         free(exit_value);
 
-        cout << "El valor de la sumatoria es en el hilo " << i << ": " << res << endl;
-
-
+        resSumatoria += res;
     }
+
+    cout << "El valor de la sumatoria es: " << resSumatoria << endl;
 
     return 0;
 
