@@ -118,7 +118,7 @@ void *sumatoria(void *arg){
     n = (float *)arg;
     float *resultado;
     resultado = (float *)malloc(sizeof(float));
-    *resultado = 1/((*n)*((*n)-1));
+    *resultado = 1/((*n)*((*n)+1));
     return (void *)resultado;
 }
 
@@ -128,7 +128,7 @@ int mainB(){
     cin >> n;
     float resSumatoria = 0;
 
-    for (int i = 2; i < n; i++) {
+    for (int i = 1; i < n; i++) {
         pthread_t hilo;
         pthread_attr_t attr;
 
